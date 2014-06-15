@@ -58,6 +58,8 @@ This is a report on 17,568 observations of steps monitoring.
 
 ![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3.png) 
 
+5-minute interval containing the MAXIMUM number of steps:
+
 ```r
   subset(perInterval, subset=(avgSteps == max(perInterval$avgSteps))) 
 ```
@@ -89,7 +91,7 @@ This is a report on 17,568 observations of steps monitoring.
 ## stat_bin: binwidth defaulted to range/30. Use 'binwidth = x' to adjust this.
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4.png) 
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5.png) 
 
 ```r
   mean(perDay$totalSteps, na.rm=TRUE)
@@ -123,7 +125,7 @@ Weekdays vs Weekends
 qplot(interval, steps, data=activityFilledType, geom="line", facets=dayType~.)
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
 
 
 

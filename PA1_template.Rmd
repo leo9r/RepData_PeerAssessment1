@@ -31,6 +31,10 @@ This is a report on 17,568 observations of steps monitoring.
   perInterval <- setNames(aggregate(activity$steps, list(activity$interval), FUN = mean, na.rm = TRUE),
                      c('interval','avgSteps'))  
   ggplot(perInterval, aes(x=interval, y=avgSteps)) + geom_line()
+```
+
+5-minute interval containing the MAXIMUM number of steps:
+```{r, echo = TRUE}
   subset(perInterval, subset=(avgSteps == max(perInterval$avgSteps))) 
 ```
 
