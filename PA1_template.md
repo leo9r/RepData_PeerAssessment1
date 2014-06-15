@@ -106,6 +106,7 @@ This is a report on 17,568 observations of steps monitoring.
 ```
 ## [1] 10766
 ```
+By filling the missing values with the interval average, the total steps mean was significantly increased but not the median. 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -114,10 +115,6 @@ This is a report on 17,568 observations of steps monitoring.
 activityFilled$weekD <- weekdays(activityFilled$date)
 activityFilled$dayType[activityFilled$weekD %in% c("Monday","Tuesday","Wednesday","Thursday","Friday")] <- "weekday"
 activityFilled$dayType[activityFilled$weekD %in% c("Saturday","Sunday")] <- "weekend"
-```
-Means:
-
-```r
 activityFilledType <- ddply(activityFilled, c("dayType","interval"), summarize, steps = mean(steps))
 ```
 Weekdays vs Weekends
@@ -126,7 +123,7 @@ Weekdays vs Weekends
 qplot(interval, steps, data=activityFilledType, geom="line", facets=dayType~.)
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6.png) 
 
 
 
