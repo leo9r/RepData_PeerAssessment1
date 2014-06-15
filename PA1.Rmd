@@ -1,0 +1,68 @@
+Peer Assessment 1 (Reproducible Research)
+========================================================
+
+This is a report on 17,568 observations of steps monitoring.
+
+## Loading and preprocessing the data
+
+```{r, echo = TRUE }
+  library(ggplot2)
+  library(plyr)
+  download.file('https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip', 
+                'activity.zip', method="curl")
+  unzip('activity.zip')
+  activity <- read.csv("activity.csv", stringsAsFactors=FALSE)
+  activity$date <- as.Date(activity$date, "%Y-%m-%d")  
+```
+
+## What is mean total number of steps taken per day?
+
+```{r, echo = TRUE}
+  perDay <- setNames(aggregate(activity$steps, list(activity$date), FUN = sum, na.rm = TRUE), 
+                     c('date','totalSteps')) 
+  ggplot(perDay, aes(x=totalSteps)) + geom_histogram()
+  mean(perDay$totalSteps, na.rm=TRUE)
+  median(perDay$totalSteps, na.rm=TRUE)
+```
+
+## What is the average daily activity pattern?
+
+```{r, echo = TRUE}
+  perInterval <- setNames(aggregate(activity$steps, list(activity$interval), FUN = mean, na.rm = TRUE),
+                     c('interval','avgSteps'))  
+  ggplot(perInterval, aes(x=interval, y=avgSteps)) + geom_line()
+  subset(perInterval, subset=(avgSteps == max(perInterval$avgSteps))) 
+```
+
+## Imputing missing values
+```{r, echo = TRUE}
+  sum(is.na(activity$steps))
+  activityFilled <- ddply(activity, "interval", function(df)
+    {df$steps[is.na(df$steps)] <- mean(df$steps, na.rm=TRUE); return(df)})
+  perDay <- setNames(aggregate(activityFilled$steps, list(activityFilled$date), FUN = sum, na.rm = TRUE), 
+                     c('date','totalSteps')) 
+  ggplot(perDay, aes(x=totalSteps)) + geom_histogram()
+  mean(perDay$totalSteps, na.rm=TRUE)
+  median(perDay$totalSteps, na.rm=TRUE)
+  
+```
+
+## Are there differences in activity patterns between weekdays and weekends?
+
+```{r, echo = TRUE}
+activityFilled$weekD <- weekdays(activityFilled$date)
+activityFilled$dayType[activityFilled$weekD %in% c("Monday","Tuesday","Wednesday","Thursday","Friday")] <- "weekday"
+activityFilled$dayType[activityFilled$weekD %in% c("Saturday","Sunday")] <- "weekend"
+```
+Means:
+```{r, echo = TRUE}
+activityFilledType <- ddply(activityFilled, c("dayType","interval"), summarize, steps = mean(steps))
+```
+Weekdays vs Weekends
+```{r, echo = TRUE}
+qplot(interval, steps, data=activityFilledType, geom="line", facets=dayType~.)
+```
+
+
+
+
